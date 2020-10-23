@@ -2,8 +2,10 @@ class Algorithm extends Grid {
   GameObjectList[] rows;
   ArrayList<ArrayList<Node>> nodes, paths;
   ArrayList<Node> solutionPath;
+  
+  boolean started = false;
 
-  Node startNote, currentNode, endNote;
+  Node startNote, currentNode, endNote, selectedNode;
 
   public Algorithm(PVector gridSize) {
     this.gridSize = gridSize;
@@ -46,9 +48,13 @@ class Algorithm extends Grid {
       }
     }
   }
-
-  void GenerateFinalPath(){
-   
+  
+  void setSelected(Node node){
+    if(selectedNode != null)
+      selectedNode.selected = false;
+      
+    selectedNode = node;
+    selectedNode.selected = true;
   }
 
   protected ArrayList<Node> getNeigbours(Node node) {

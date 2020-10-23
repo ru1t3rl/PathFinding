@@ -13,7 +13,8 @@ class Node extends Cell {
     SetupBorders();
 
     visited = false;
-    bg = GetGroundColor(EGroundType.Stone);
+    eGroundType = EGroundType.Stone;
+    bg = GetGroundColor(eGroundType);
     visitedBg = new PVector(125, 125, 125);
   }
 
@@ -22,7 +23,8 @@ class Node extends Cell {
 
     SetupBorders();
     visited = false;
-    bg = GetGroundColor(EGroundType.Stone);
+    eGroundType = groundType;
+    bg = GetGroundColor(eGroundType);
     visitedBg = new PVector(125, 125, 125);
   }
 
@@ -35,23 +37,39 @@ class Node extends Cell {
 
     visited = false;
 
-    visitedBg = new PVector(125, 125, 125);
+    eGroundType = EGroundType.Stone;
+    visitedBg = visitedClr;
+  }
+  
+  void Update(){
+     if(!manager.playingState.algo.started){
+        if(inputHelper.IsMouseDown()){
+           if(mouseX > getGlobalPosition().x && mouseX < getGlobalPosition().x + size.x && mouseY > getGlobalPosition().y && mouseY < getGlobalPosition().y + size.y){
+             Debug.log("You hit a cell of type: "+eGroundType);
+             manager.playingState.algo.setSelected(this);
+           }
+        }
+     }
+  }
+  
+  public void setType(EGroundType type){
+     eGroundType = type; 
   }
 
   public PVector GetGroundColor(EGroundType type) {
     switch(type) {
     case Dirt:
       cost = 3;
-      return new PVector(139, 69, 19);
+      return dirtColor;
     case Stone:
       cost = 1;
-      return new PVector(100, 100, 150);
+      return stoneColor;
     case Grass:
       cost = 2;
-      return new PVector(0, 190, 0);
+      return grassColor;
     case NonWalkable:
       cost = -1;
-      return new PVector(20, 20, 20);
+      return nonWalkableColor;
     default:
       println("This is not a valid/predefined groundtype");
       break;
@@ -79,9 +97,25 @@ class Node extends Cell {
   public void AddNeighbour(Node node) {
     neighbours.add(node);
   }
+  
+  protected void SetupBorders(){
+    // Top Border
+    this.Add(new Border(Position.Top,  new PVector(0, 0), new PVector(size.x, 0), this));
+
+    // Left Border
+    this.Add(new Border(Position.Left, new PVector(0, 0), new PVector(0, size.x), this));
+
+    // Right Border
+    this.Add(new Border(Position.Right, new PVector(size.x, 0), new PVector(size.x, size.y), this));
+
+    // Bottom Border
+    this.Add(new Border(Position.Bottom, new PVector(0, size.y), new PVector(size.x, size.y), this));
+  }
 
   public void draw() {
     super.draw();
+
+    bg = GetGroundColor(eGroundType);
 
     if (visited)
       fill(visitedBg.x, visitedBg.y, visitedBg.z);

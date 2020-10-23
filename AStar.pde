@@ -21,16 +21,27 @@ class AStar extends Algorithm {
 
     id="AStar";
     openNodes = new ArrayList<Node>();
+    started = false;
+  }
+
+  void Start(PVector index) {
+    currentNode = nodes.get((int)index.x).get((int)index.y);
+    solutionPath.add(currentNode);
+    started = true;
   }
 
   void Update() {
-    super.Update();
-    if(currentNode == endNote)
-      return;
+    super.Update();   
 
+    
+    
+    if (currentNode == endNote | !started)
+      return;
+      
     unvisitedN = getUnvisitedNeighbours(currentNode);
     for (int iNode = 0; iNode < unvisitedN.size(); iNode++) {
       openNodes.add(unvisitedN.get(iNode));
+      openNodes.get(openNodes.size() - 1).Parent = currentNode;
     }
 
     Node cheapestNode = null;
@@ -46,6 +57,7 @@ class AStar extends Algorithm {
 
     currentNode.Visit();
     currentNode = cheapestNode;
+    solutionPath.add(currentNode);
   }
 
   public float getHeuristic(Node node) {

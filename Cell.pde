@@ -1,12 +1,12 @@
 class Cell extends GameObjectList {
   public PVector bg;
-  boolean prevEn;
+  boolean prevEn, selected;
 
   public Cell(PVector position, PVector size) {
     super();
     this.position = position;
     this.size = size;
-    
+
     id = "Cell";
     bg = new PVector(255, 255, 255);
     SetupBorders();
@@ -17,11 +17,11 @@ class Cell extends GameObjectList {
     this.position = position;
     this.size = size;
     this.bg = bg;
-    
+
     id = "Cell";
     SetupBorders();
   }
-  
+
 
   void Update() {
     super.Update();
@@ -32,17 +32,17 @@ class Cell extends GameObjectList {
     }
 
     prevEn = enabled;
-    
-    if(inputHelper.IsMouseDown()){
-        if((mouseX > getGlobalPosition().x && mouseX < getGlobalPosition().x - size.x) && (mouseY > getGlobalPosition().y && mouseY < getGlobalPosition().y + size.y)){
-           // Show a bar for setting the tile type 
-        }
+
+    if (inputHelper.IsMouseDown()) {
+      if ((mouseX > getGlobalPosition().x && mouseX < getGlobalPosition().x - size.x) && (mouseY > getGlobalPosition().y && mouseY < getGlobalPosition().y + size.y)) {
+        // Show a bar for setting the tile type
+      }
     }
   }
 
-  void SetupBorders() {    
+  protected void SetupBorders() {
     // Top Border
-    this.Add(new Border(Position.Top,  new PVector(0, 0), new PVector(size.x, 0)));
+    this.Add(new Border(Position.Top, new PVector(0, 0), new PVector(size.x, 0)));
 
     // Left Border
     this.Add(new Border(Position.Left, new PVector(0, 0), new PVector(0, size.x)));
@@ -74,9 +74,9 @@ class Cell extends GameObjectList {
 }
 
 public enum Position {
-  Top, 
-    Bottom, 
-    Left, 
+  Top,
+    Bottom,
+    Left,
     Right
 }
 
@@ -84,8 +84,11 @@ class Border extends GameObject {
   PVector start, end, clr;
   float weight;
   Position pos;
+  Node parent;
 
-  public Position Pos() { 
+
+
+  public Position Pos() {
     return pos;
   }
 
@@ -96,6 +99,16 @@ class Border extends GameObject {
 
     weight = 1;
     clr = new PVector(0, 0, 0);
+  }
+
+  public Border(Position pos, PVector start, PVector end, Node parent) {
+    this.start = start;
+    this.end = end;
+    this.pos = pos;
+
+    weight = 1;
+    clr = new PVector(0, 0, 0);
+    this.parent = parent;
   }
 
   public Border(PVector start, PVector end, PVector clr) {
@@ -124,8 +137,12 @@ class Border extends GameObject {
 
   public void draw() {
     if (enabled) {
-      strokeWeight(weight);
-      stroke(clr.x, clr.y, clr.z, 255);
+      strokeWeight(0.5f);
+      if (!parent.selected)
+        stroke(clr.x, clr.y, clr.z, 255);
+      else
+        stroke(255, 0, 0);
+        
       line(Parent.getGlobalPosition().x + start.x, Parent.getGlobalPosition().y + start.y, Parent.getGlobalPosition().x + end.x, Parent.getGlobalPosition().y + end.y);
     }
   }

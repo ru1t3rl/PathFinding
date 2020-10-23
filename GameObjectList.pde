@@ -7,11 +7,17 @@ class GameObjectList extends GameObject {
     children = new ArrayList<GameObject>();
   }
 
+  public GameObjectList(PVector position) {
+    super(position);
+    id="GameObjectList";
+    children = new ArrayList<GameObject>();
+  }
+
   public ArrayList<GameObject> Children() {
     return children;
   }
 
-  public void Add(GameObject obj) {    
+  public void Add(GameObject obj) {
     obj.Parent = this;
     children.add(obj);
   }

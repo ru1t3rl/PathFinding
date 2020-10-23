@@ -14,12 +14,12 @@ GameStateManager manager;
 
 void settings() {
   Debug.log("Setting the Debug mode");
-  Debug.mode = Debug.Mode.Release;
+  Debug.mode = Debug.Mode.Develop;
 
   Debug.log("Setting Window Size");
   //fullScreen(P3D);
 
-  size(900, 900, P3D);
+  size(1200, 900, P3D);
 }
 
 void setup() {
@@ -83,3 +83,12 @@ static class Debug {
       Release
   }
 }
+
+/// Variables
+PVector stoneColor = new PVector(200, 200, 200);
+PVector grassColor = new PVector(0, 190, 0);
+PVector dirtColor = new PVector(139, 69, 19);
+PVector nonWalkableColor = new PVector(20, 20, 20);
+
+PVector startColor = new PVector(255, 0, 0);
+PVector finishColor = new PVector(255, 0, 0);

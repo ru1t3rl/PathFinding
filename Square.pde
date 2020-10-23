@@ -36,7 +36,6 @@ class Square extends GameObject {
   public void draw() {
     super.draw();
     fill(clr.x, clr.y, clr.z);
-    rectMode(Origin);
     rect(getGlobalPosition().x, getGlobalPosition().y, size.x, size.y);
   }
 }
