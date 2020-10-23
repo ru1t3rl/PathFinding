@@ -1,8 +1,9 @@
 class Algorithm extends Grid {
   GameObjectList[] rows;
-  ArrayList<ArrayList<Node>> nodes;
+  ArrayList<ArrayList<Node>> nodes, paths;
+  ArrayList<Node> solutionPath;
 
-  Node startNote, endNote;
+  Node startNote, currentNode, endNote;
 
   public Algorithm(PVector gridSize) {
     this.gridSize = gridSize;
@@ -10,6 +11,23 @@ class Algorithm extends Grid {
     id = "baseGrid";
 
     SetupNodes();
+  }
+  
+  public Algorithm(PVector gridSize, PVector cellSize) {
+      this.gridSize = gridSize;
+      this.cellSize = cellSize;
+      id = "baseGrid";
+      
+      SetupNodes();
+  }
+  
+  public Algorithm(PVector gridSize, PVector cellSize, PVector startNodeIndex){
+     this.gridSize = gridSize;
+     this.cellSize = cellSize;
+     id = "baseGrid";
+     
+     SetupNodes();
+     currentNode = nodes.get((int)startNodeIndex.y).get((int)startNodeIndex.x);
   }
 
   void SetupNodes() {
@@ -29,7 +47,11 @@ class Algorithm extends Grid {
     }
   }
 
-  ArrayList<Node> GetNeigbours(Node node) {
+  void GenerateFinalPath(){
+   
+  }
+
+  protected ArrayList<Node> getNeigbours(Node node) {
     ArrayList<Node> neighbours = new ArrayList<Node>();
 
     // Left neighbour
@@ -67,39 +89,39 @@ class Algorithm extends Grid {
     return neighbours;
   }
 
-  ArrayList<Node> GetUnvisitedNeighbour(Node node) {
+  protected ArrayList<Node> getUnvisitedNeighbours(Node node) {
     ArrayList<Node> neighbours = new ArrayList<Node>();
 
     // Left neighbour
-    if (node.index.x - 1>= 0 && node.index.x < gridSize.x - 1 && !node.IsVisited())
+    if (node.index.x - 1>= 0 && node.index.x < gridSize.x - 1 && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
     neighbours.add(nodes.get((int)node.index.y).get((int)node.index.x - 1));
 
     // Right neighbour
-    if (node.index.x + 1 < gridSize.x && !node.IsVisited())
+    if (node.index.x + 1 < gridSize.x && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
     neighbours.add(nodes.get((int)node.index.y).get((int)node.index.x + 1));
 
     // Upper neighbour
-    if (node.index.y - 1 >= 0 && !node.IsVisited())
+    if (node.index.y - 1 >= 0 && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
     neighbours.add(nodes.get((int)node.index.y - 1).get((int)node.index.x));
 
     // Lower Neighbour
-    if (node.index.y + 1 < gridSize.y && !node.IsVisited())
+    if (node.index.y + 1 < gridSize.y && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
     neighbours.add(nodes.get((int)node.index.y + 1).get((int)node.index.x));
 
     // Left Upper Neighbour
-    if (node.index.x - 1 > 0 && node.index.y - 1 > 0 && !node.IsVisited())
+    if (node.index.x - 1 > 0 && node.index.y - 1 > 0 && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
     neighbours.add(nodes.get((int)node.index.y - 1).get((int)node.index.x - 1));
 
     // Right Upper Neighbour
-    if (node.index.x + 1 < gridSize.x && node.index.y - 1> 0 && !node.IsVisited())
+    if (node.index.x + 1 < gridSize.x && node.index.y - 1> 0 && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
     neighbours.add(nodes.get((int)node.index.y - 1).get((int)node.index.x + 1));
 
     // Left Lower Neighbour
-    if (node.index.x - 1 > 0 && node.index.y + 1 < gridSize.y && !node.IsVisited())
+    if (node.index.x - 1 > 0 && node.index.y + 1 < gridSize.y && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
     neighbours.add(nodes.get((int)node.index.y + 1).get((int)node.index.x - 1));
 
     // Right Lower Neighbour
-    if (node.index.x + 1 < gridSize.x && node.index.y + 1 < gridSize.y && !node.IsVisited())
+    if (node.index.x + 1 < gridSize.x && node.index.y + 1 < gridSize.y && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
     neighbours.add(nodes.get((int)node.index.y + 1).get((int)node.index.x + 1));
     
     return neighbours;

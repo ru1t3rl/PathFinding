@@ -32,6 +32,12 @@ class Cell extends GameObjectList {
     }
 
     prevEn = enabled;
+    
+    if(inputHelper.IsMouseDown()){
+        if((mouseX > getGlobalPosition().x && mouseX < getGlobalPosition().x - size.x) && (mouseY > getGlobalPosition().y && mouseY < getGlobalPosition().y + size.y)){
+           // Show a bar for setting the tile type 
+        }
+    }
   }
 
   void SetupBorders() {    

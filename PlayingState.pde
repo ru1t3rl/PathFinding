@@ -1,8 +1,8 @@
 class PlayingState extends GameObjectList {
-  Grid grid;
+  Algorithm algo;
   
   public PlayingState() {
-    this.Add(grid = new Grid(new PVector(10,10)));
+    this.Add(algo = new Algorithm(new PVector(50, 50), new PVector(width/50, width/50)));
   }
 
   public void Update() {

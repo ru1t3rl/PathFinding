@@ -4,14 +4,26 @@ class Node extends Cell {
   PVector visitedBg;
   PVector index;
 
+  EGroundType eGroundType;
+  int cost;
+
   public Node(PVector position, PVector size) {
     super(position, size);
 
     SetupBorders();
 
     visited = false;
-    bg = new PVector(255, 255, 255);
-    visitedBg = new PVector(0, 0, 0);
+    bg = GetGroundColor(EGroundType.Stone);
+    visitedBg = new PVector(125, 125, 125);
+  }
+
+  public Node(PVector position, PVector size, EGroundType groundType) {
+    super(position, size);
+
+    SetupBorders();
+    visited = false;
+    bg = GetGroundColor(EGroundType.Stone);
+    visitedBg = new PVector(125, 125, 125);
   }
 
   public Node(PVector position, PVector size, PVector bg, PVector visitedClr) {
@@ -22,13 +34,37 @@ class Node extends Cell {
     SetupBorders();
 
     visited = false;
+
+    visitedBg = new PVector(125, 125, 125);
   }
 
-  public void SetIndex(PVector index){
+  public PVector GetGroundColor(EGroundType type) {
+    switch(type) {
+    case Dirt:
+      cost = 3;
+      return new PVector(139, 69, 19);
+    case Stone:
+      cost = 1;
+      return new PVector(100, 100, 150);
+    case Grass:
+      cost = 2;
+      return new PVector(0, 190, 0);
+    case NonWalkable:
+      cost = -1;
+      return new PVector(20, 20, 20);
+    default:
+      println("This is not a valid/predefined groundtype");
+      break;
+    }
+
+    return new PVector(0, 0, 0);
+  }
+
+  public void SetIndex(PVector index) {
     this.index = index;
   }
 
-  public void SetIndex(int iRow, int iCol){
+  public void SetIndex(int iRow, int iCol) {
     this.index = new PVector(iCol, iRow);
   }
 
@@ -54,4 +90,11 @@ class Node extends Cell {
 
     rect(getGlobalPosition().x, getGlobalPosition().y, size.x, size.y);
   }
+}
+
+public enum EGroundType {
+  Dirt,
+    Stone,
+    Grass,
+    NonWalkable
 }
