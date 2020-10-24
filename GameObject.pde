@@ -62,8 +62,13 @@ class GameObject {
 
   public PVector getGlobalPosition() {
     if (Parent != null)
-      return new PVector(position.x + Parent.getGlobalPosition().x, position.y + Parent.getGlobalPosition().y);
-    else
+    try {
+      return new PVector(position.x + Parent.position.x, position.y + Parent.position.y);
+    }
+    catch(StackOverflowError e) {
+      Debug.log("Caught "+e);
+      return position;
+    } else
       return position;
   }
 }

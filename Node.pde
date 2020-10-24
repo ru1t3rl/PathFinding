@@ -1,11 +1,17 @@
 class Node extends Cell {
-  ArrayList<Node> neighbours;
+  ArrayList<Node> neighbors = new ArrayList<Node>();
   boolean visited;
   PVector visitedBg;
   PVector index;
 
+  float f = 0,
+    g = 0,
+    h = 0;
+
   EGroundType eGroundType;
   int cost;
+
+  Node previous = null;
 
   public Node(PVector position, PVector size) {
     super(position, size);
@@ -40,20 +46,20 @@ class Node extends Cell {
     eGroundType = EGroundType.Stone;
     visitedBg = visitedClr;
   }
-  
-  void Update(){
-     if(!manager.playingState.algo.started){
-        if(inputHelper.IsMouseDown()){
-           if(mouseX > getGlobalPosition().x && mouseX < getGlobalPosition().x + size.x && mouseY > getGlobalPosition().y && mouseY < getGlobalPosition().y + size.y){
-             Debug.log("You hit a cell of type: "+eGroundType);
-             manager.playingState.algo.setSelected(this);
-           }
+
+  void Update() {
+    if (!manager.playingState.algo.started) {
+      if (inputHelper.IsMouseDown()) {
+        if (mouseX > getGlobalPosition().x && mouseX < getGlobalPosition().x + size.x && mouseY > getGlobalPosition().y && mouseY < getGlobalPosition().y + size.y) {
+          Debug.log("You hit a cell of type: "+eGroundType);
+          manager.playingState.algo.setSelected(this);
         }
-     }
+      }
+    }
   }
-  
-  public void setType(EGroundType type){
-     eGroundType = type; 
+
+  public void setType(EGroundType type) {
+    eGroundType = type;
   }
 
   public PVector GetGroundColor(EGroundType type) {
@@ -70,6 +76,12 @@ class Node extends Cell {
     case NonWalkable:
       cost = -1;
       return nonWalkableColor;
+    case Finish:
+      cost = 0;
+      return finishColor;
+    case Start:
+      cost = 0;
+      return startColor;
     default:
       println("This is not a valid/predefined groundtype");
       break;
@@ -95,12 +107,12 @@ class Node extends Cell {
   }
 
   public void AddNeighbour(Node node) {
-    neighbours.add(node);
+    neighbors.add(node);
   }
-  
-  protected void SetupBorders(){
+
+  protected void SetupBorders() {
     // Top Border
-    this.Add(new Border(Position.Top,  new PVector(0, 0), new PVector(size.x, 0), this));
+    this.Add(new Border(Position.Top, new PVector(0, 0), new PVector(size.x, 0), this));
 
     // Left Border
     this.Add(new Border(Position.Left, new PVector(0, 0), new PVector(0, size.x), this));
@@ -115,7 +127,8 @@ class Node extends Cell {
   public void draw() {
     super.draw();
 
-    bg = GetGroundColor(eGroundType);
+    if(!manager.playingState.algo.started)
+      bg = GetGroundColor(eGroundType);
 
     if (visited)
       fill(visitedBg.x, visitedBg.y, visitedBg.z);
@@ -130,5 +143,7 @@ public enum EGroundType {
   Dirt,
     Stone,
     Grass,
-    NonWalkable
+    NonWalkable,
+    Start,
+    Finish
 }
