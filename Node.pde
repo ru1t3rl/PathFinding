@@ -58,12 +58,12 @@ class Node extends Cell {
 
             if (eGroundType == EGroundType.Finish)
             {
-              if(manager.playingState.algo.endNode != null)
+              if (manager.playingState.algo.endNode != null)
                 manager.playingState.algo.endNode.eGroundType = EGroundType.Stone;
               manager.playingState.algo.endNode = this;
             }
             if (eGroundType == EGroundType.Start) {
-              if(manager.playingState.algo.startNode != null)
+              if (manager.playingState.algo.startNode != null)
                 manager.playingState.algo.startNode.eGroundType = EGroundType.Stone;
               manager.playingState.algo.startNode = this;
             }
@@ -72,6 +72,7 @@ class Node extends Cell {
         }
       }
     }
+    bg = GetGroundColor(eGroundType);
   }
 
   public void setType(EGroundType type) {
@@ -142,9 +143,6 @@ class Node extends Cell {
 
   public void draw() {
     super.draw();
-
-    if (!manager.playingState.algo.started)
-      bg = GetGroundColor(eGroundType);
 
     if (visited)
       fill(visitedBg.x, visitedBg.y, visitedBg.z);

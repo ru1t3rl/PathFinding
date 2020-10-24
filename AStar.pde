@@ -1,5 +1,6 @@
 class AStar extends Algorithm {
   ArrayList<Node> openSet, closedSet;
+  Node lastCheckedNode;
 
   public AStar(PVector gridSize) {
     super(gridSize);
@@ -13,15 +14,14 @@ class AStar extends Algorithm {
     super(gridSize, cellSize, startNodeIndex);
   }
 
-  private void reconstructPath(Node current) {
+  private void reconstructPath(Node endNode) {
     path = new ArrayList<Node>();
-
-    Node temp = current;
+    Node temp = endNode;
     path.add(temp);
-
-    while (temp.previous != null) {
-      path.add(temp.previous);
-      temp = temp.previous;
+    
+    while(temp.previous != null){
+        path.add(temp.previous);
+        temp = temp.previous;
     }
   }
 
@@ -63,14 +63,14 @@ class AStar extends Algorithm {
   }
 
   public void draw() {
-    super.draw();
-
     // Draw path
     if (path != null) {
       for (int iNode = 0; iNode < path.size(); iNode++) {
         path.get(iNode).bg = new PVector(0, 255, 255);
       }
     }
+    
+    super.draw();
   }
 
   public void FindPath() {
@@ -82,9 +82,16 @@ class AStar extends Algorithm {
       if (openSet.get(iNode).f < openSet.get(lowestIndex).f) {
         lowestIndex = iNode;
       }
+
+      if (openSet.get(iNode).f == openSet.get(lowestIndex).f) {
+        if (openSet.get(iNode).g > openSet.get(lowestIndex).g) {
+          lowestIndex = iNode;
+        }
+      }
     }
 
     currentNode = openSet.get(lowestIndex);
+    lastCheckedNode = currentNode;
 
     if (currentNode == endNode) {
       finished = true;
@@ -98,25 +105,24 @@ class AStar extends Algorithm {
     for (int iNode = 0; iNode < neighbors.size(); iNode++) {
       Node neighbor = neighbors.get(iNode);
 
-      if (!closedSet.contains(neighbor)) {
-        float tempG = currentNode.g + 1;
+      if (!closedSet.contains(neighbor) && neighbor.eGroundType != EGroundType.NonWalkable) {
+        float tempG = currentNode.g + heuristic(neighbor, currentNode);
 
-        if (openSet.contains(neighbor)) {
-          if (tempG < neighbor.g)
-            neighbor.g = tempG;
-        } else {
-          neighbor.g = tempG;
-          if (neighbor.eGroundType != EGroundType.NonWalkable)
+        if (!openSet.contains(neighbor)) {
             openSet.add(neighbor);
+        } else if(tempG >= neighbor.g) {
+          // It's not a better path 
+          continue; 
         }
 
+        neighbor.g = tempG;
         neighbor.h = heuristic(neighbor, endNode);
         neighbor.f = neighbor.g + neighbor.h;
         neighbor.previous = currentNode;
       }
     }
 
-    reconstructPath(currentNode);
+    reconstructPath(lastCheckedNode);
   }
 
   float heuristic(Node current, Node end) {
