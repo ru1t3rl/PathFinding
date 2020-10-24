@@ -5,7 +5,7 @@
  To Add GameSates to the manager go to the StateManager.pde file and add it manually.
  
  TODO:
-  - Add a function for adding new GameStates
+ - Add a function for adding new GameStates
  */
 
 final int FPS = 60;
@@ -46,22 +46,38 @@ void draw() {
 }
 
 void keyPressed() {
-  inputHelper.keysDown[char(key)] = true;
-  inputHelper.keysPressed[char(key)] = true;
+  try {
+    inputHelper.keysDown[char(key)] = true;
+    inputHelper.keysPressed[char(key)] = true;
+  }
+  catch (ArrayIndexOutOfBoundsException e) {
+  }
 }
 
 void keyReleased() {
-  inputHelper.keysPressed[char(key)] = false;
+  try {
+    inputHelper.keysPressed[char(key)] = false;
+  }
+  catch (ArrayIndexOutOfBoundsException e) {
+  }
 }
 
 void mousePressed() {
-  inputHelper.mouseDown = true;
-  inputHelper.mouseP = true;
+  try {
+    inputHelper.mouseDown = true;
+    inputHelper.mouseP = true;
+  }
+  catch (ArrayIndexOutOfBoundsException e) {
+  }
 }
 
 void  mouseReleased() {
-  inputHelper.mouseDown = false;
-  inputHelper.mouseP = false;
+  try {
+    inputHelper.mouseDown = false;
+    inputHelper.mouseP = false;
+  }
+  catch (ArrayIndexOutOfBoundsException e) {
+  }
 }
 
 static class Debug {
@@ -86,8 +102,13 @@ static class Debug {
 
 /// Variables
 PVector stoneColor = new PVector(200, 200, 200);
+float stoneCost = .5f;
 PVector grassColor = new PVector(0, 190, 0);
+float grassCost = 7.5f;
 PVector dirtColor = new PVector(139, 69, 19);
+float dirtCost = 15;
+PVector waterColor = new PVector(0, 0, 255);
+float waterCost = 35;
 PVector nonWalkableColor = new PVector(20, 20, 20);
 
 PVector startColor = new PVector(255, 0, 0);

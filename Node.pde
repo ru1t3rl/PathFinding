@@ -9,7 +9,7 @@ class Node extends Cell {
     h = 0;
 
   EGroundType eGroundType;
-  int cost;
+  float cost;
 
   Node previous = null;
 
@@ -49,7 +49,7 @@ class Node extends Cell {
 
   void Update() {
     if (!manager.playingState.algo.started) {
-      if (inputHelper.IsMouseDown()) {
+      if (inputHelper.IsMouseDown() || inputHelper.IsMousePressed()) {
         if (mouseX > getGlobalPosition().x && mouseX < getGlobalPosition().x + size.x && mouseY > getGlobalPosition().y && mouseY < getGlobalPosition().y + size.y) {
           if (manager.playingState.algo.selectedNode != this && manager.playingState.menu.selectedType == null)
             manager.playingState.algo.setSelected(this);
@@ -58,12 +58,12 @@ class Node extends Cell {
 
             if (eGroundType == EGroundType.Finish)
             {
-              if (manager.playingState.algo.endNode != null)
+              if (manager.playingState.algo.endNode != null && manager.playingState.algo.endNode != this)
                 manager.playingState.algo.endNode.eGroundType = EGroundType.Stone;
               manager.playingState.algo.endNode = this;
             }
             if (eGroundType == EGroundType.Start) {
-              if (manager.playingState.algo.startNode != null)
+              if (manager.playingState.algo.startNode != null && manager.playingState.algo.startNode != this)
                 manager.playingState.algo.startNode.eGroundType = EGroundType.Stone;
               manager.playingState.algo.startNode = this;
             }
@@ -82,14 +82,17 @@ class Node extends Cell {
   public PVector GetGroundColor(EGroundType type) {
     switch(type) {
     case Dirt:
-      cost = 3;
+      cost = dirtCost;
       return dirtColor;
     case Stone:
-      cost = 1;
+      cost = stoneCost;
       return stoneColor;
     case Grass:
-      cost = 2;
+      cost = grassCost;
       return grassColor;
+    case Water:
+      cost = waterCost;
+      return waterColor;
     case NonWalkable:
       cost = -1;
       return nonWalkableColor;
@@ -157,6 +160,7 @@ public enum EGroundType {
   Dirt,
     Stone,
     Grass,
+    Water,
     NonWalkable,
     Start,
     Finish

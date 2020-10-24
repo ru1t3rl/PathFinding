@@ -1,13 +1,13 @@
 class NodeMenu extends GameObjectList {
   //Stone
-  Square stoneS, grassS, dirtS, nonWalkableS;
-  TextObject stoneTxt, grassTxt, dirtTxt, nonWalkableTxt;
+  Square stoneS, grassS, dirtS, waterS, nonWalkableS;
+  TextObject stoneTxt, grassTxt, dirtTxt, waterTxt, nonWalkableTxt;
 
   Square startS, finishS;
   TextObject startTxt, finishTxt;
 
-  Square startBtn, clearBtn;
-  TextObject btnText, clearTxt;
+  Square startBtn, clearBtn, randomBtn;
+  TextObject btnText, clearTxt, randomTxt;
 
   EGroundType selectedType = null;
 
@@ -17,33 +17,42 @@ class NodeMenu extends GameObjectList {
     // Tile Types
     this.Add(stoneS = new Square(new PVector(20, 20), new PVector(20, 20), EGroundType.Stone));
     stoneS.SetColor(stoneColor);
-    this.Add(stoneTxt = new TextObject("Stone (1)", new PVector(45, 38), 18));
+    this.Add(stoneTxt = new TextObject("Stone ("+stoneCost+")", new PVector(45, 38), 18));
 
     this.Add(grassS = new Square(new PVector(20, 45), new PVector(20, 20), EGroundType.Grass));
     grassS.SetColor(grassColor);
-    this.Add(grassTxt = new TextObject("Grass (2)", new PVector(45, 63), 18));
+    this.Add(grassTxt = new TextObject("Grass ("+grassCost+")", new PVector(45, 63), 18));
 
     this.Add(dirtS = new Square(new PVector(20, 70), new PVector(20, 20), EGroundType.Dirt));
     dirtS.SetColor(dirtColor);
-    this.Add(dirtTxt = new TextObject("Dirt (3)", new PVector(45, 88), 18));
+    this.Add(dirtTxt = new TextObject("Dirt ("+dirtCost+")", new PVector(45, 88), 18));
 
-    this.Add(nonWalkableS = new Square(new PVector(20, 95), new PVector(20, 20), EGroundType.NonWalkable));
+    this.Add(waterS = new Square(new PVector(20, 95), new PVector(20, 20), EGroundType.Water));
+    waterS.SetColor(waterColor);
+    this.Add(waterTxt = new TextObject("Water ("+waterCost+")", new PVector(45, 113), 18));
+
+    this.Add(nonWalkableS = new Square(new PVector(20, 120), new PVector(20, 20), EGroundType.NonWalkable));
     nonWalkableS.SetColor(nonWalkableColor);
-    this.Add(nonWalkableTxt = new TextObject("Non-Walkable", new PVector(45, 113), 18));
+    this.Add(nonWalkableTxt = new TextObject("Non-Walkable", new PVector(45, 138), 18));
 
     // Start and finish
-    this.Add(startS = new Square(new PVector(20, 150), new PVector(20, 20), EGroundType.Start));
+    this.Add(startS = new Square(new PVector(20, 175), new PVector(20, 20), EGroundType.Start));
     startS.SetColor(startColor);
-    this.Add(startTxt = new TextObject("Start", new PVector(45, 168), 18));
+    this.Add(startTxt = new TextObject("Start", new PVector(45, 193), 18));
 
-    this.Add(finishS = new Square(new PVector(20, 175), new PVector(20, 20), EGroundType.Finish));
+    this.Add(finishS = new Square(new PVector(20, 200), new PVector(20, 20), EGroundType.Finish));
     finishS.SetColor(finishColor);
-    this.Add(finishTxt = new TextObject("Finish", new PVector(45, 193), 18));
+    this.Add(finishTxt = new TextObject("Finish", new PVector(45, 218), 18));
 
     // Start Button
     this.Add(startBtn = new Square(new PVector(20, height - 105), new PVector(300 - 40, 40)));
     startBtn.SetColor(new PVector(200, 200, 200));
     this.Add(btnText = new TextObject("Start", new PVector(20 + 300/3, height - 77), 20));
+
+    // Random Button
+    this.Add(randomBtn = new Square(new PVector(20, height - 150), new PVector(300 - 40, 40)));
+    randomBtn.SetColor(new PVector(200, 200, 200));
+    this.Add(randomTxt = new TextObject("Random Walls", new PVector(20 + 300/5, height - 122), 20));
 
     // Clear Button
     clearBtn = new Square(new PVector(20, height - 60), new PVector(300 - 40, 40));
@@ -67,6 +76,8 @@ class NodeMenu extends GameObjectList {
           manager.playingState.algo.selectedNode.setType(EGroundType.Dirt);
         if (mouseX > nonWalkableS.getGlobalPosition().x && mouseX < nonWalkableS.getGlobalPosition().x + nonWalkableS.size.x && mouseY > nonWalkableS.getGlobalPosition().y && mouseY < nonWalkableS.getGlobalPosition().y + nonWalkableS.size.y)
           manager.playingState.algo.selectedNode.setType(EGroundType.NonWalkable);
+        if (mouseX > waterS.getGlobalPosition().x && mouseX < waterS.getGlobalPosition().x + waterS.size.x && mouseY > waterS.getGlobalPosition().y && mouseY < waterS.getGlobalPosition().y + waterS.size.y)
+          manager.playingState.algo.selectedNode.setType(EGroundType.Water);
 
         // Start and finish
         if (mouseX > startS.getGlobalPosition().x && mouseX < startS.getGlobalPosition().x + startS.size.x && mouseY > startS.getGlobalPosition().y && mouseY < startS.getGlobalPosition().y + startS.size.y) {
@@ -103,6 +114,12 @@ class NodeMenu extends GameObjectList {
           else
             selectedType = null;
         }
+        if (mouseX > waterS.getGlobalPosition().x && mouseX < waterS.getGlobalPosition().x + waterS.size.x && mouseY > waterS.getGlobalPosition().y && mouseY < waterS.getGlobalPosition().y + waterS.size.y) {
+          if (selectedType != EGroundType.Water)
+            selectedType = EGroundType.Water;
+          else
+            selectedType = null;
+        }
 
         // Start and finish
         if (mouseX > startS.getGlobalPosition().x && mouseX < startS.getGlobalPosition().x + startS.size.x && mouseY > startS.getGlobalPosition().y && mouseY < startS.getGlobalPosition().y + startS.size.y) {
@@ -120,12 +137,17 @@ class NodeMenu extends GameObjectList {
         }
       }
 
+      // Random Walls button
+      if (mouseX > randomBtn.getGlobalPosition().x && mouseX < randomBtn.getGlobalPosition().x + randomBtn.size.x && mouseY > randomBtn.getGlobalPosition().y && mouseY < randomBtn.getGlobalPosition().y + randomBtn.size.y)
+        manager.playingState.algo.PlaceRandomWalls(random(10f, 35f));
+
       // Start Button
       if (mouseX > startBtn.getGlobalPosition().x && mouseX < startBtn.getGlobalPosition().x + startBtn.size.x && mouseY > startBtn.getGlobalPosition().y && mouseY < startBtn.getGlobalPosition().y + startBtn.size.y) {
         manager.playingState.algo.Start();
         btnText.SetText("Running");
       }
 
+      // Clear Button
       if (manager.playingState.algo.started) {
         if (mouseX > clearBtn.getGlobalPosition().x && mouseX < clearBtn.getGlobalPosition().x + clearBtn.size.x && mouseY > clearBtn.getGlobalPosition().y & mouseY < clearBtn.getGlobalPosition().y + clearBtn.size.y) {
           manager.playingState.algo.Clear();

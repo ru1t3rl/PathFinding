@@ -74,7 +74,10 @@ class AStar extends Algorithm {
   }
 
   public void FindPath() {
-    if (openSet.isEmpty() || finished)
+    if (openSet.isEmpty()){
+      manager.playingState.menu.btnText.SetText("Not Found!");
+      return;
+    } else if(finished)
       return;
 
     int lowestIndex = 0;
@@ -106,7 +109,7 @@ class AStar extends Algorithm {
       Node neighbor = neighbors.get(iNode);
 
       if (!closedSet.contains(neighbor) && neighbor.eGroundType != EGroundType.NonWalkable) {
-        float tempG = currentNode.g + heuristic(neighbor, currentNode);
+        float tempG = currentNode.g + heuristic(neighbor, currentNode) + neighbor.cost;
 
         if (!openSet.contains(neighbor)) {
             openSet.add(neighbor);
@@ -123,6 +126,20 @@ class AStar extends Algorithm {
     }
 
     reconstructPath(lastCheckedNode);
+  }
+  
+  public void PlaceRandomWalls(float change){
+    while(change > 100){
+       change /= 10; 
+    }
+    
+    for(int iRow = 0; iRow < gridSize.y; iRow++){
+      for(int iCol = 0; iCol < gridSize.x; iCol++){
+         if(random(100f) <= change){
+            nodes.get(iRow).get(iCol).setType(EGroundType.NonWalkable); 
+         }
+      }
+    }
   }
 
   float heuristic(Node current, Node end) {
