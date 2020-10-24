@@ -51,8 +51,24 @@ class Node extends Cell {
     if (!manager.playingState.algo.started) {
       if (inputHelper.IsMouseDown()) {
         if (mouseX > getGlobalPosition().x && mouseX < getGlobalPosition().x + size.x && mouseY > getGlobalPosition().y && mouseY < getGlobalPosition().y + size.y) {
-          Debug.log("You hit a cell of type: "+eGroundType);
-          manager.playingState.algo.setSelected(this);
+          if (manager.playingState.algo.selectedNode != this && manager.playingState.menu.selectedType == null)
+            manager.playingState.algo.setSelected(this);
+          else if (manager.playingState.menu.selectedType != null) {
+            eGroundType = manager.playingState.menu.selectedType;
+
+            if (eGroundType == EGroundType.Finish)
+            {
+              if(manager.playingState.algo.endNode != null)
+                manager.playingState.algo.endNode.eGroundType = EGroundType.Stone;
+              manager.playingState.algo.endNode = this;
+            }
+            if (eGroundType == EGroundType.Start) {
+              if(manager.playingState.algo.startNode != null)
+                manager.playingState.algo.startNode.eGroundType = EGroundType.Stone;
+              manager.playingState.algo.startNode = this;
+            }
+          } else
+            manager.playingState.algo.setSelected(null);
         }
       }
     }
@@ -127,7 +143,7 @@ class Node extends Cell {
   public void draw() {
     super.draw();
 
-    if(!manager.playingState.algo.started)
+    if (!manager.playingState.algo.started)
       bg = GetGroundColor(eGroundType);
 
     if (visited)

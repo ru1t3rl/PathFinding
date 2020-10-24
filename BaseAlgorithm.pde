@@ -98,7 +98,8 @@ class Algorithm extends Grid {
       selectedNode.selected = false;
 
     selectedNode = node;
-    selectedNode.selected = true;
+    if(node != null)
+      selectedNode.selected = true;
   }
 
   void Start(PVector index) {

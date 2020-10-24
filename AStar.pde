@@ -35,8 +35,8 @@ class AStar extends Algorithm {
       openSet.add(startNode);
     }
   }
-  
-  public void Clear(){
+
+  public void Clear() {
     started = false;
     openSet.clear();
     closedSet.clear();
@@ -44,15 +44,15 @@ class AStar extends Algorithm {
     finished = false;
     ResetNodes();
   }
-  
+
   private void ResetNodes() {
-     for(int iRow = 0; iRow < nodes.size(); iRow++){
-        for(int iCol = 0; iCol < nodes.get(iRow).size(); iCol++){
-           nodes.get(iRow).get(iCol).f = 0;
-           nodes.get(iRow).get(iCol).h = 0;
-           nodes.get(iRow).get(iCol).g = 0;
-        }
-     }
+    for (int iRow = 0; iRow < nodes.size(); iRow++) {
+      for (int iCol = 0; iCol < nodes.get(iRow).size(); iCol++) {
+        nodes.get(iRow).get(iCol).f = 0;
+        nodes.get(iRow).get(iCol).h = 0;
+        nodes.get(iRow).get(iCol).g = 0;
+      }
+    }
   }
 
   public void Update() {
@@ -68,7 +68,7 @@ class AStar extends Algorithm {
     // Draw path
     if (path != null) {
       for (int iNode = 0; iNode < path.size(); iNode++) {
-        path.get(iNode).bg = new PVector(0, 0, 0);
+        path.get(iNode).bg = new PVector(0, 255, 255);
       }
     }
   }
@@ -86,9 +86,9 @@ class AStar extends Algorithm {
 
     currentNode = openSet.get(lowestIndex);
 
-    if (currentNode == endNode){
+    if (currentNode == endNode) {
       finished = true;
-      Debug.log("Done");
+      manager.playingState.menu.btnText.SetText("Finished!");
     }
 
     openSet.remove(currentNode);
@@ -106,7 +106,8 @@ class AStar extends Algorithm {
             neighbor.g = tempG;
         } else {
           neighbor.g = tempG;
-          openSet.add(neighbor);
+          if (neighbor.eGroundType != EGroundType.NonWalkable)
+            openSet.add(neighbor);
         }
 
         neighbor.h = heuristic(neighbor, endNode);
