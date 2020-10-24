@@ -38,6 +38,21 @@ class AStar extends Algorithm {
   
   public void Clear(){
     started = false;
+    openSet.clear();
+    closedSet.clear();
+    path.clear();
+    finished = false;
+    ResetNodes();
+  }
+  
+  private void ResetNodes() {
+     for(int iRow = 0; iRow < nodes.size(); iRow++){
+        for(int iCol = 0; iCol < nodes.get(iRow).size(); iCol++){
+           nodes.get(iRow).get(iCol).f = 0;
+           nodes.get(iRow).get(iCol).h = 0;
+           nodes.get(iRow).get(iCol).g = 0;
+        }
+     }
   }
 
   public void Update() {
@@ -50,25 +65,6 @@ class AStar extends Algorithm {
   public void draw() {
     super.draw();
 
-    // Setting the baseColor to white
-    for (int i = 0; i < gridSize.y; i++) {
-      for (int j = 0; j < gridSize.x; j++) {
-        nodes.get(i).get(j).bg = new PVector(255, 255, 255);
-      }
-    }
-
-    if (started) {
-      // When still open
-      for (int iNode = 0; iNode < openSet.size(); iNode++) {
-        openSet.get(iNode).bg = new PVector(255, 0, 0);
-      }
-
-      // When closed
-      for (int iNode = 0; iNode < closedSet.size(); iNode++) {
-        closedSet.get(iNode).bg = new PVector(0, 255, 0);
-      }
-    }
-
     // Draw path
     if (path != null) {
       for (int iNode = 0; iNode < path.size(); iNode++) {
@@ -78,7 +74,6 @@ class AStar extends Algorithm {
   }
 
   public void FindPath() {
-    Debug.log("Finding Path");
     if (openSet.isEmpty() || finished)
       return;
 
@@ -91,8 +86,10 @@ class AStar extends Algorithm {
 
     currentNode = openSet.get(lowestIndex);
 
-    if (currentNode == endNode)
+    if (currentNode == endNode){
       finished = true;
+      Debug.log("Done");
+    }
 
     openSet.remove(currentNode);
     closedSet.add(currentNode);

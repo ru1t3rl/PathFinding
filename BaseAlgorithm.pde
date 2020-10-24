@@ -54,42 +54,42 @@ class Algorithm extends Grid {
       }
     }
 
-    for (int iRow = 0; iRow < this.gridSize.y; iRow++){
-      for(int iCol = 0; iCol < this.gridSize.x; iCol++){
-        if(iRow > 0){
+    for (int iRow = 0; iRow < this.gridSize.y; iRow++) {
+      for (int iCol = 0; iCol < this.gridSize.x; iCol++) {
+        if (iRow > 0) {
           // Upper Middle
           nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow - 1).get(iCol));
-          
+
           // Upper Left
-          if(iCol > 0)
+          if (iCol > 0)
             nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow - 1).get(iCol - 1));
-          
+
           // Upper Right
-          if(iCol < this.gridSize.x - 1)
+          if (iCol < this.gridSize.x - 1)
             nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow - 1).get(iCol + 1));
         }
-        
-        if(iRow < this.gridSize.y - 1){
+
+        if (iRow < this.gridSize.y - 1) {
           // Bottom Middle
           nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow + 1).get(iCol));
 
           // Bottom left
-          if(iCol > 0)
+          if (iCol > 0)
             nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow + 1).get(iCol - 1));
 
           // Bottom Right
-          if(iCol < this.gridSize.x - 1)
+          if (iCol < this.gridSize.x - 1)
             nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow + 1).get(iCol + 1));
         }
 
         // Left Middle
-        if(iCol > 0)
+        if (iCol > 0)
           nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow).get(iCol - 1));
 
         // Right Middle
-        if(iCol < this.gridSize.x - 1)
+        if (iCol < this.gridSize.x - 1)
           nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow).get(iCol + 1));
-      }    
+      }
     }
   }
 
