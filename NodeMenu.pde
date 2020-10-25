@@ -6,10 +6,12 @@ class NodeMenu extends GameObjectList {
   Square startS, finishS;
   TextObject startTxt, finishTxt;
 
-  Square startBtn, clearBtn, randomBtn;
-  TextObject btnText, clearTxt, randomTxt;
+  Square startBtn, clearBtn, randomBtn, exportBtn, loadBtn;
+  TextObject btnText, clearTxt, randomTxt, exportTxt, loadTxt;
 
   EGroundType selectedType = null;
+  
+  TextObject statusTxt;
 
   public NodeMenu(PVector position) {
     super(position);
@@ -43,6 +45,18 @@ class NodeMenu extends GameObjectList {
     this.Add(finishS = new Square(new PVector(20, 200), new PVector(20, 20), EGroundType.Finish));
     finishS.SetColor(finishColor);
     this.Add(finishTxt = new TextObject("Finish", new PVector(45, 218), 18));
+
+    this.Add(statusTxt = new TextObject("Status: Idle", new PVector(20, height - 212), 18));
+
+    // Export n Load Button
+    this.Add(exportBtn = new Square(new PVector(20, height - 195), new PVector(300/2 - 25, 40)));
+    exportBtn.SetColor(new PVector(200, 200, 200));
+    this.Add(exportTxt = new TextObject("Export", new PVector(20 + 300/8, height - 167), 18));
+
+    this.Add(loadBtn = new Square(new PVector(5+300/2, height - 195), new PVector(300/2 - 25, 40)));
+    loadBtn.SetColor(new PVector(200, 200, 200));
+    this.Add(loadTxt = new TextObject("Load", new PVector(20 + 300/1.7f, height - 167), 18));
+
 
     // Start Button
     this.Add(startBtn = new Square(new PVector(20, height - 105), new PVector(300 - 40, 40)));
@@ -88,6 +102,8 @@ class NodeMenu extends GameObjectList {
           manager.playingState.algo.endNode = manager.playingState.algo.selectedNode;
           manager.playingState.algo.selectedNode.setType(EGroundType.Finish);
         }
+        
+        statusTxt.SetText("Status: Idle");
       } else {
         // Tile Types
         if (mouseX > stoneS.getGlobalPosition().x && mouseX < stoneS.getGlobalPosition().x + stoneS.size.x && mouseY > stoneS.getGlobalPosition().y && mouseY < stoneS.getGlobalPosition().y + stoneS.size.y) {
@@ -135,6 +151,19 @@ class NodeMenu extends GameObjectList {
           else
             selectedType = null;
         }
+        statusTxt.SetText("Status: Idle");
+      }
+
+      if (mouseX > exportBtn.getGlobalPosition().x && mouseX < exportBtn.getGlobalPosition().x + exportBtn.size.x && mouseY > exportBtn.getGlobalPosition().y && mouseY < exportBtn.getGlobalPosition().y + exportBtn.size.y) {
+        statusTxt.SetText("Status: Exporting");
+        PImage map = manager.playingState.algo.exportMap();
+        map.save(dataPath("map.png"));
+        statusTxt.SetText("Status: Exported");
+      }
+      if (mouseX > loadBtn.getGlobalPosition().x && mouseX < loadBtn.getGlobalPosition().x + loadBtn.size.x && mouseY > loadBtn.getGlobalPosition().y && mouseY < loadBtn.getGlobalPosition().y + loadBtn.size.y) {
+        statusTxt.SetText("Status: Loading");
+        manager.playingState.algo.loadMap(loadImage("data/map.png"));
+        statusTxt.SetText("Status: Loaded");
       }
 
       // Random Walls button
@@ -144,7 +173,7 @@ class NodeMenu extends GameObjectList {
       // Start Button
       if (mouseX > startBtn.getGlobalPosition().x && mouseX < startBtn.getGlobalPosition().x + startBtn.size.x && mouseY > startBtn.getGlobalPosition().y && mouseY < startBtn.getGlobalPosition().y + startBtn.size.y) {
         manager.playingState.algo.Start();
-        btnText.SetText("Running");
+        statusTxt.SetText("Status: Finding Path");
       }
 
       // Clear Button

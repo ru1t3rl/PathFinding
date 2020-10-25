@@ -98,7 +98,7 @@ class Algorithm extends Grid {
       selectedNode.selected = false;
 
     selectedNode = node;
-    if(node != null)
+    if (node != null)
       selectedNode.selected = true;
   }
 
@@ -113,6 +113,63 @@ class Algorithm extends Grid {
     path = new ArrayList<Node>();
     path.add(currentNode);
     started = true;
+  }
+
+  PImage exportMap() {
+    PImage temp = createImage(nodes.size(), nodes.get(0).size(), ARGB);
+
+    int iRow = 0, iCol = 0, dimension = nodes.size() * nodes.get(0).size();
+    for (int iPixel = 0; iPixel < dimension; iPixel++) {
+      if (iCol >= nodes.get(0).size()) {
+        iCol = 0;
+        iRow++;
+      }
+
+      temp.pixels[iPixel] = color((int)nodes.get(iRow).get(iCol).bg.x, (int)nodes.get(iRow).get(iCol).bg.y, (int)nodes.get(iRow).get(iCol).bg.z);
+
+      iCol++;
+    }
+
+    return temp;
+  }
+
+  public void loadMap(PImage map) {
+    int iRow = 0, iCol = 0, dimension = nodes.size() * nodes.get(0).size();
+
+    color stone = color((int)stoneColor.x, (int)stoneColor.y, (int)stoneColor.z),
+      water = color((int)waterColor.x, (int)waterColor.y, (int)waterColor.z),
+      dirt = color((int)dirtColor.x, (int)dirtColor.y, (int)dirtColor.z),
+      grass = color((int)grassColor.x, (int)grassColor.y, (int)grassColor.z),
+      finish = color((int)finishColor.x, (int)finishColor.y, (int)finishColor.z),
+      start = color((int)startColor.x, (int)startColor.y, (int)startColor.z),
+      nonWalkable = color((int)nonWalkableColor.x, (int)nonWalkableColor.y, (int)nonWalkableColor.z);
+
+    for (int iPixel = 0; iPixel < dimension; iPixel++) {
+      if (iCol >= nodes.get(0).size()) {
+        iCol = 0;
+        iRow++;
+      }
+
+      if (map.pixels[iPixel] == stone)
+        nodes.get(iRow).get(iCol).setType(EGroundType.Stone);
+      else if (map.pixels[iPixel] == water)
+        nodes.get(iRow).get(iCol).setType(EGroundType.Water);
+      else if (map.pixels[iPixel] == dirt)
+        nodes.get(iRow).get(iCol).setType(EGroundType.Dirt);
+      else if (map.pixels[iPixel] == grass)
+        nodes.get(iRow).get(iCol).setType(EGroundType.Grass);
+      else if (map.pixels[iPixel] == nonWalkable)
+        nodes.get(iRow).get(iCol).setType(EGroundType.NonWalkable);
+      else if (map.pixels[iPixel] == finish) {
+        nodes.get(iRow).get(iCol).setType(EGroundType.Finish);
+        endNode = nodes.get(iRow).get(iCol);
+      } else if (map.pixels[iPixel] == start) {
+        nodes.get(iRow).get(iCol).setType(EGroundType.Start);
+        startNode = nodes.get(iRow).get(iCol);
+      }
+
+      iCol++;
+    }
   }
 
   protected ArrayList<Node> getNeigbours(Node node) {

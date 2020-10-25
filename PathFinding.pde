@@ -103,7 +103,7 @@ static class Debug {
 /// Variables
 PVector stoneColor = new PVector(200, 200, 200);
 float stoneCost = .5f;
-PVector grassColor = new PVector(0, 190, 0);
+PVector grassColor = new PVector(0, 100, 0);
 float grassCost = 7.5f;
 PVector dirtColor = new PVector(139, 69, 19);
 float dirtCost = 15;
@@ -111,5 +111,5 @@ PVector waterColor = new PVector(0, 0, 255);
 float waterCost = 35;
 PVector nonWalkableColor = new PVector(20, 20, 20);
 
-PVector startColor = new PVector(255, 0, 0);
+PVector startColor = new PVector(0, 255, 0);
 PVector finishColor = new PVector(255, 0, 0);
