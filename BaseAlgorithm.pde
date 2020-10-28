@@ -1,11 +1,17 @@
 class Algorithm extends Grid {
   GameObjectList[] rows;
   ArrayList<ArrayList<Node>> nodes;
-  ArrayList<Node> path;
+  ArrayList<Node> path = new ArrayList<Node>();
+  ArrayList<Node> openSet, closedSet;
+  Algorithms algorithm = null;
 
   boolean started = false, finished;
 
   Node startNode, currentNode, endNode, selectedNode;
+
+  public Algorithm() {
+    super();
+  }
 
   public Algorithm(PVector gridSize) {
     this.gridSize = gridSize;
@@ -14,7 +20,7 @@ class Algorithm extends Grid {
 
     finished = false;
 
-    SetupNodes();
+    setupNodes();
   }
 
   public Algorithm(PVector gridSize, PVector cellSize) {
@@ -24,7 +30,7 @@ class Algorithm extends Grid {
 
     finished = false;
 
-    SetupNodes();
+    setupNodes();
   }
 
   public Algorithm(PVector gridSize, PVector cellSize, PVector startNodeIndex) {
@@ -34,23 +40,106 @@ class Algorithm extends Grid {
 
     finished = false;
 
-    SetupNodes();
+    setupNodes();
     currentNode = nodes.get((int)startNodeIndex.y).get((int)startNodeIndex.x);
   }
 
-  void SetupNodes() {
+  public void start(){
+     started = true;
+     currentNode = startNode;
+     openSet = new ArrayList<Node>();
+     closedSet = new ArrayList<Node>();
+     openSet.add(currentNode);
+  }
+
+  public void update() {
+    super.update();
+
+    if (started && !finished)
+      search();
+  }
+
+  public void draw() {    
+    if (!enabled)
+      return;
+
+    for (int iNode = 0; iNode < path.size(); iNode++) {
+      //path.get(iNode).bg = new PVector(0, 255, 255);
+      Node n = path.get(iNode);
+
+      strokeWeight(2);
+      stroke(0);
+      if (n.previous != null)
+        line(n.getGlobalPosition().x + cellSize.x/2, n.getGlobalPosition().y + cellSize.y/2, n.previous.getGlobalPosition().x + cellSize.x/2, n.previous.getGlobalPosition().y + cellSize.y/2);
+    }
+    
+    super.draw();
+  }
+
+  protected void search() {
+  }
+
+  public void clear() {
+    started = false;
+    path.clear();
+    finished = false;
+    resetNode();
+  }
+
+  private void resetNode() {
+    for (int iRow = 0; iRow < nodes.size(); iRow++) {
+      for (int iCol = 0; iCol < nodes.get(iRow).size(); iCol++) {
+        nodes.get(iRow).get(iCol).f = 0;
+        nodes.get(iRow).get(iCol).h = 0;
+        nodes.get(iRow).get(iCol).g = 0;
+      }
+    }
+  }
+
+  public void placeRandomWalls(float change) {
+    while (change > 100) {
+      change /= 10;
+    }
+
+    for (int iRow = 0; iRow < gridSize.y; iRow++) {
+      for (int iCol = 0; iCol < gridSize.x; iCol++) {
+        if (random(100f) <= change) {
+          nodes.get(iRow).get(iCol).setType(EGroundType.NonWalkable);
+        }
+      }
+    }
+  }
+
+  void setupNodes() {
+    setupNodes(true);
+  }
+
+
+  protected void reconstructPath(Node endNode) {
+    Node temp = endNode;
+
+    path = new ArrayList<Node>();
+    path.add(temp);
+
+    while (temp.previous != null) {
+      path.add(temp.previous);
+      temp = temp.previous;
+    }
+  }
+
+  void setupNodes(boolean allowDiagonal) {
     nodes = new ArrayList<ArrayList<Node>>();
     rows = new GameObjectList[(int)gridSize.y];
 
     for (int iRow = 0; iRow < this.gridSize.y; iRow++) {
       nodes.add(new ArrayList<Node>());
-      this.Add(rows[iRow] = new GameObjectList());
+      this.add(rows[iRow] = new GameObjectList());
 
       for (int iCol = 0; iCol < this.gridSize.x; iCol++) {
         nodes.get(iRow).add(new Node(new PVector(iCol * cellSize.x, iRow * cellSize.y), cellSize));
-        nodes.get(iRow).get(iCol).SetIndex(iRow, iCol);
+        nodes.get(iRow).get(iCol).setIndex(iRow, iCol);
 
-        rows[iRow].Add(nodes.get(iRow).get(iCol));
+        rows[iRow].add(nodes.get(iRow).get(iCol));
       }
     }
 
@@ -60,26 +149,30 @@ class Algorithm extends Grid {
           // Upper Middle
           nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow - 1).get(iCol));
 
-          // Upper Left
-          if (iCol > 0)
-            nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow - 1).get(iCol - 1));
+          if (allowDiagonal) {
+            // Upper Left
+            if (iCol > 0)
+              nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow - 1).get(iCol - 1));
 
-          // Upper Right
-          if (iCol < this.gridSize.x - 1)
-            nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow - 1).get(iCol + 1));
+            // Upper Right
+            if (iCol < this.gridSize.x - 1)
+              nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow - 1).get(iCol + 1));
+          }
         }
 
         if (iRow < this.gridSize.y - 1) {
           // Bottom Middle
           nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow + 1).get(iCol));
 
-          // Bottom left
-          if (iCol > 0)
-            nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow + 1).get(iCol - 1));
+          if (allowDiagonal) {
+            // Bottom left
+            if (iCol > 0)
+              nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow + 1).get(iCol - 1));
 
-          // Bottom Right
-          if (iCol < this.gridSize.x - 1)
-            nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow + 1).get(iCol + 1));
+            // Bottom Right
+            if (iCol < this.gridSize.x - 1)
+              nodes.get(iRow).get(iCol).neighbors.add(nodes.get(iRow + 1).get(iCol + 1));
+          }
         }
 
         // Left Middle
@@ -102,17 +195,22 @@ class Algorithm extends Grid {
       selectedNode.selected = true;
   }
 
-  void Start(PVector index) {
+  void start(PVector index) {
     currentNode = nodes.get((int)index.x).get((int)index.y);
     path.add(currentNode);
     started = true;
   }
 
-  void Start() {
-    currentNode = startNode;
-    path = new ArrayList<Node>();
-    path.add(currentNode);
-    started = true;
+  protected void setGrid(ArrayList<ArrayList<Node>> grid) {
+    nodes = grid;
+    rows = new GameObjectList[grid.size()];
+
+    for (int iRow = 0; iRow < grid.size(); iRow++) {
+      this.add(rows[iRow] = new GameObjectList());
+      for (int iCol = 0; iCol < grid.get(iRow).size(); iCol++) {
+        rows[iRow].add(nodes.get(iRow).get(iCol));
+      }
+    }
   }
 
   PImage exportMap() {
@@ -171,80 +269,10 @@ class Algorithm extends Grid {
       iCol++;
     }
   }
+}
 
-  protected ArrayList<Node> getNeigbours(Node node) {
-    ArrayList<Node> neighbours = new ArrayList<Node>();
-
-    // Left neighbour
-    if (node.index.x - 1>= 0 && node.index.x < gridSize.x - 1)
-      neighbours.add(nodes.get((int)node.index.y).get((int)node.index.x - 1));
-
-    // Right neighbour
-    if (node.index.x + 1 < gridSize.x)
-      neighbours.add(nodes.get((int)node.index.y).get((int)node.index.x + 1));
-
-    // Upper neighbour
-    if (node.index.y - 1 >= 0)
-      neighbours.add(nodes.get((int)node.index.y - 1).get((int)node.index.x));
-
-    // Lower Neighbour
-    if (node.index.y + 1 < gridSize.y)
-      neighbours.add(nodes.get((int)node.index.y + 1).get((int)node.index.x));
-
-    // Left Upper Neighbour
-    if (node.index.x - 1 > 0 && node.index.y - 1 > 0)
-      neighbours.add(nodes.get((int)node.index.y - 1).get((int)node.index.x - 1));
-
-    // Right Upper Neighbour
-    if (node.index.x + 1 < gridSize.x && node.index.y - 1> 0)
-      neighbours.add(nodes.get((int)node.index.y - 1).get((int)node.index.x + 1));
-
-    // Left Lower Neighbour
-    if (node.index.x - 1 > 0 && node.index.y + 1 < gridSize.y)
-      neighbours.add(nodes.get((int)node.index.y + 1).get((int)node.index.x - 1));
-
-    // Right Lower Neighbour
-    if (node.index.x + 1 < gridSize.x && node.index.y + 1 < gridSize.y)
-      neighbours.add(nodes.get((int)node.index.y + 1).get((int)node.index.x + 1));
-
-    return neighbours;
-  }
-
-  protected ArrayList<Node> getUnvisitedNeighbours(Node node) {
-    ArrayList<Node> neighbours = new ArrayList<Node>();
-
-    // Left neighbour
-    if (node.index.x - 1>= 0 && node.index.x < gridSize.x - 1 && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
-      neighbours.add(nodes.get((int)node.index.y).get((int)node.index.x - 1));
-
-    // Right neighbour
-    if (node.index.x + 1 < gridSize.x && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
-      neighbours.add(nodes.get((int)node.index.y).get((int)node.index.x + 1));
-
-    // Upper neighbour
-    if (node.index.y - 1 >= 0 && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
-      neighbours.add(nodes.get((int)node.index.y - 1).get((int)node.index.x));
-
-    // Lower Neighbour
-    if (node.index.y + 1 < gridSize.y && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
-      neighbours.add(nodes.get((int)node.index.y + 1).get((int)node.index.x));
-
-    // Left Upper Neighbour
-    if (node.index.x - 1 > 0 && node.index.y - 1 > 0 && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
-      neighbours.add(nodes.get((int)node.index.y - 1).get((int)node.index.x - 1));
-
-    // Right Upper Neighbour
-    if (node.index.x + 1 < gridSize.x && node.index.y - 1> 0 && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
-      neighbours.add(nodes.get((int)node.index.y - 1).get((int)node.index.x + 1));
-
-    // Left Lower Neighbour
-    if (node.index.x - 1 > 0 && node.index.y + 1 < gridSize.y && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
-      neighbours.add(nodes.get((int)node.index.y + 1).get((int)node.index.x - 1));
-
-    // Right Lower Neighbour
-    if (node.index.x + 1 < gridSize.x && node.index.y + 1 < gridSize.y && !node.IsVisited() && node.eGroundType != EGroundType.NonWalkable)
-      neighbours.add(nodes.get((int)node.index.y + 1).get((int)node.index.x + 1));
-
-    return neighbours;
-  }
+public enum Algorithms {
+  Dijkstra,
+    aStar,
+    BFS
 }

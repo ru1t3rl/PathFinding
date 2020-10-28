@@ -9,7 +9,7 @@ class Cell extends GameObjectList {
 
     id = "Cell";
     bg = new PVector(255, 255, 255);
-    SetupBorders();
+    setupBorders();
   }
 
   public Cell(PVector position, PVector size, PVector bg) {
@@ -19,12 +19,12 @@ class Cell extends GameObjectList {
     this.bg = bg;
 
     id = "Cell";
-    SetupBorders();
+    setupBorders();
   }
 
 
-  void Update() {
-    super.Update();
+  void update() {
+    super.update();
     if (prevEn != enabled) {
       for (GameObject gobj : children) {
         gobj.enabled = enabled;
@@ -40,21 +40,21 @@ class Cell extends GameObjectList {
     }
   }
 
-  protected void SetupBorders() {
+  protected void setupBorders() {
     // Top Border
-    this.Add(new Border(Position.Top, new PVector(0, 0), new PVector(size.x, 0)));
+    this.add(new Border(Position.Top, new PVector(0, 0), new PVector(size.x, 0)));
 
     // Left Border
-    this.Add(new Border(Position.Left, new PVector(0, 0), new PVector(0, size.x)));
+    this.add(new Border(Position.Left, new PVector(0, 0), new PVector(0, size.x)));
 
     // Right Border
-    this.Add(new Border(Position.Right, new PVector(size.x, 0), new PVector(size.x, size.y)));
+    this.add(new Border(Position.Right, new PVector(size.x, 0), new PVector(size.x, size.y)));
 
     // Bottom Border
-    this.Add(new Border(Position.Bottom, new PVector(0, size.y), new PVector(size.x, size.y)));
+    this.add(new Border(Position.Bottom, new PVector(0, size.y), new PVector(size.x, size.y)));
   }
 
-  public void ToggleWall(Position pos) {
+  public void toggleWall(Position pos) {
     for (int iBorder = 0; iBorder < this.children.size(); iBorder++) {
       Border b = (Border)this.children.get(iBorder);
 

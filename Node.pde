@@ -16,21 +16,21 @@ class Node extends Cell {
   public Node(PVector position, PVector size) {
     super(position, size);
 
-    SetupBorders();
+    setupBorders();
 
     visited = false;
     eGroundType = EGroundType.Stone;
-    bg = GetGroundColor(eGroundType);
+    bg = getGroundColor(eGroundType);
     visitedBg = new PVector(125, 125, 125);
   }
 
   public Node(PVector position, PVector size, EGroundType groundType) {
     super(position, size);
 
-    SetupBorders();
+    setupBorders();
     visited = false;
     eGroundType = groundType;
-    bg = GetGroundColor(eGroundType);
+    bg = getGroundColor(eGroundType);
     visitedBg = new PVector(125, 125, 125);
   }
 
@@ -39,7 +39,7 @@ class Node extends Cell {
     this.bg = bg;
     this.visitedBg = visitedClr;
 
-    SetupBorders();
+    setupBorders();
 
     visited = false;
 
@@ -47,39 +47,40 @@ class Node extends Cell {
     visitedBg = visitedClr;
   }
 
-  void Update() {
-    if (!manager.playingState.algo.started) {
+  void update() {
+    super.update();
+    if (!manager.playingState.algo.base.started) {
       if (inputHelper.IsMouseDown() || inputHelper.IsMousePressed()) {
         if (mouseX > getGlobalPosition().x && mouseX < getGlobalPosition().x + size.x && mouseY > getGlobalPosition().y && mouseY < getGlobalPosition().y + size.y) {
-          if (manager.playingState.algo.selectedNode != this && manager.playingState.menu.selectedType == null)
-            manager.playingState.algo.setSelected(this);
+          if (manager.playingState.algo.base.selectedNode != this && manager.playingState.menu.selectedType == null)
+            manager.playingState.algo.base.setSelected(this);
           else if (manager.playingState.menu.selectedType != null) {
             eGroundType = manager.playingState.menu.selectedType;
 
             if (eGroundType == EGroundType.Finish)
             {
-              if (manager.playingState.algo.endNode != null && manager.playingState.algo.endNode != this)
-                manager.playingState.algo.endNode.eGroundType = EGroundType.Stone;
-              manager.playingState.algo.endNode = this;
+              if (manager.playingState.algo.base.endNode != null && manager.playingState.algo.base.endNode != this)
+                manager.playingState.algo.base.endNode.eGroundType = EGroundType.Stone;
+              manager.playingState.algo.base.endNode = this;
             }
             if (eGroundType == EGroundType.Start) {
-              if (manager.playingState.algo.startNode != null && manager.playingState.algo.startNode != this)
-                manager.playingState.algo.startNode.eGroundType = EGroundType.Stone;
-              manager.playingState.algo.startNode = this;
+              if (manager.playingState.algo.base.startNode != null && manager.playingState.algo.base.startNode != this)
+                manager.playingState.algo.base.startNode.eGroundType = EGroundType.Stone;
+              manager.playingState.algo.base.startNode = this;
             }
           } else
-            manager.playingState.algo.setSelected(null);
+            manager.playingState.algo.base.setSelected(null);
         }
       }
     }
-    bg = GetGroundColor(eGroundType);
+    bg = getGroundColor(eGroundType);
   }
 
   public void setType(EGroundType type) {
     eGroundType = type;
   }
 
-  public PVector GetGroundColor(EGroundType type) {
+  public PVector getGroundColor(EGroundType type) {
     switch(type) {
     case Dirt:
       cost = dirtCost;
@@ -110,38 +111,38 @@ class Node extends Cell {
     return new PVector(0, 0, 0);
   }
 
-  public void SetIndex(PVector index) {
+  public void setIndex(PVector index) {
     this.index = index;
   }
 
-  public void SetIndex(int iRow, int iCol) {
+  public void setIndex(int iRow, int iCol) {
     this.index = new PVector(iCol, iRow);
   }
 
-  public void Visit() {
+  public void visit() {
     visited = true;
   }
 
-  public boolean IsVisited() {
+  public boolean isVisited() {
     return visited;
   }
 
-  public void AddNeighbour(Node node) {
+  public void addNeighbour(Node node) {
     neighbors.add(node);
   }
 
-  protected void SetupBorders() {
+  protected void setupBorders() {
     // Top Border
-    this.Add(new Border(Position.Top, new PVector(0, 0), new PVector(size.x, 0), this));
+    this.add(new Border(Position.Top, new PVector(0, 0), new PVector(size.x, 0), this));
 
     // Left Border
-    this.Add(new Border(Position.Left, new PVector(0, 0), new PVector(0, size.x), this));
+    this.add(new Border(Position.Left, new PVector(0, 0), new PVector(0, size.x), this));
 
     // Right Border
-    this.Add(new Border(Position.Right, new PVector(size.x, 0), new PVector(size.x, size.y), this));
+    this.add(new Border(Position.Right, new PVector(size.x, 0), new PVector(size.x, size.y), this));
 
     // Bottom Border
-    this.Add(new Border(Position.Bottom, new PVector(0, size.y), new PVector(size.x, size.y), this));
+    this.add(new Border(Position.Bottom, new PVector(0, size.y), new PVector(size.x, size.y), this));
   }
 
   public void draw() {

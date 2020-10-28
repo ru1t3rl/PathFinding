@@ -31,15 +31,15 @@ class TextObject extends GameObject {
      clr = new PVector(0, 0, 0);
   }
 
-  public void SetText(String value) {
+  public void setText(String value) {
     text = value;
   }
 
-  public void SetPosition(PVector position) {
+  public void setPosition(PVector position) {
     this.position = position;
   }
 
-  public void SetColor(PVector clr){
+  public void setColor(PVector clr){
      this.clr = clr; 
   }
 

@@ -8,7 +8,7 @@
  - Add a function for adding new GameStates
  */
 
-final int FPS = 60;
+final int FPS = 1000;
 InputHelper inputHelper;
 GameStateManager manager;
 
@@ -35,14 +35,14 @@ void setup() {
 }
 
 void Update() {
-  manager.Update();
+  manager.update();
 }
 
 void draw() {
   background(255);
   Update();
   manager.draw();
-  inputHelper.Update();
+  inputHelper.update();
 }
 
 void keyPressed() {

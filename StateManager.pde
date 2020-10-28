@@ -15,15 +15,15 @@ class GameStateManager extends GameObject {
         playingState = new PlayingState();
     }
     
-    public void SetState(GameState state){
+    public void setState(GameState state){
        currentState = state; 
     }
 
-    public void Update(){
-      super.Update();
+    public void update(){
+      super.update();
         switch (currentState) {
             case PlayingState:
-                playingState.Update();
+                playingState.update();
                 break;
             default :
                 println(currentState.toString()+" is not a valid gameState!");

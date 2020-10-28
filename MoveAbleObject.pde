@@ -4,7 +4,8 @@ class MoveAbleSprite extends SpriteGameObject{
        this.velocity = velocity;
    }
    
-   void Update(){
+   void update(){
+     super.update();
       if(inputHelper.keysPressed['w']){
         position.y -= velocity.y;
       }

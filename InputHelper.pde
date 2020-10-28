@@ -13,7 +13,7 @@ class InputHelper extends GameObject{
     }
   }
 
-  public void Update() {
+  public void update() {
     // Loop through all the keys and check if it's active
     // When it's active add 1 to the corresponding framesActive
     // if the framesActive is greater then 1 the key is pressed and not down (down means keyPressed for 1 frame)

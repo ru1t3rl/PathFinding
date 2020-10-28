@@ -5,21 +5,21 @@ class Stack {
     items = new ArrayList<GameObject>();
   }
 
-  public void Push(GameObject item) {
+  public void push(GameObject item) {
     items.add(item);
   }
 
-  public GameObject Pop() {
+  public GameObject pop() {
     GameObject item = items.get(items.size() - 1);
     items.remove(items.size() - 1);
     return item;
   }
 
-  public GameObject Peek() {
+  public GameObject peek() {
     return items.get(items.size() - 1);
   }
 
-  public boolean Empty() {
-    return (items.size() == 0) ? true : false;
+  public boolean isEmpty() {
+    return items.size() == 0;
   }
 }

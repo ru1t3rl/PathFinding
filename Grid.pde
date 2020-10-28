@@ -11,7 +11,7 @@ class Grid extends GameObjectList {
     this.gridSize = gridSize;
     this.cellSize = cellSize;
     id = "Grid";
-    SetupCells();
+    setupCells();
   }
 
   public Grid() {
@@ -24,7 +24,7 @@ class Grid extends GameObjectList {
     this.cellSize = (width/gridSize.x > height/gridSize.y) ? new PVector(height/gridSize.y, height/gridSize.y) : new PVector(width/gridSize.x, width/gridSize.x);
     id = "Grid";
 
-    SetupCells();
+    setupCells();
   }
 
   public Grid(PVector gridSize, PVector cellSize, PVector bg) {
@@ -33,18 +33,18 @@ class Grid extends GameObjectList {
     this.cellSize = cellSize;
     id = "Grid";
 
-    SetupCells(bg);
+    setupCells(bg);
   }
 
-  void Update() {
-    super.Update();
+  void update() {
+    super.update();
   }
 
   void draw() {
     super.draw();
   }
 
-  void SetupCells() {
+  void setupCells() {
     rows = new GameObjectList[(int)gridSize.y];
 
     for (int iRow = 0; iRow < gridSize.y; iRow++) {
@@ -52,14 +52,14 @@ class Grid extends GameObjectList {
       rows[iRow] = new GameObjectList();
 
       for (int iCol = 0; iCol < gridSize.x; iCol++) {
-        rows[iRow].Add(new Cell(new PVector(cellSize.x * iCol, cellSize.y * iRow), cellSize));
+        rows[iRow].add(new Cell(new PVector(cellSize.x * iCol, cellSize.y * iRow), cellSize));
       }
 
-      Add(rows[iRow]);
+      add(rows[iRow]);
     }
   }
 
-  void SetupCells(PVector bg) {
+  void setupCells(PVector bg) {
     rows = new GameObjectList[(int)gridSize.y];
 
     for (int iRow = 0; iRow < gridSize.y; iRow++) {
@@ -67,14 +67,14 @@ class Grid extends GameObjectList {
       rows[iRow] = new GameObjectList();
 
       for (int iCol = 0; iCol < gridSize.x; iCol++) {
-        rows[iRow].Add(new Cell(new PVector(cellSize.x * iCol, cellSize.y * iRow), cellSize, bg));
+        rows[iRow].add(new Cell(new PVector(cellSize.x * iCol, cellSize.y * iRow), cellSize, bg));
       }
 
-      Add(rows[iRow]);
+      add(rows[iRow]);
     }
   }
 
-  public void SetBackground(PVector background) {
+  public void setBackground(PVector background) {
     for (int iRow = 0; iRow < gridSize.y; iRow++) {
       for (int iCol = 0; iCol < gridSize.x; iCol++) {
         Cell c = (Cell)rows[iRow].children.get(iCol);

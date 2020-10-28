@@ -35,11 +35,11 @@ class Square extends GameObject {
     id = "Square";
   }
 
-  public void Update() {
-    super.Update();
+  public void update() {
+    super.update();
   }
 
-  public void SetColor(PVector clr) {
+  public void setColor(PVector clr) {
     this.clr = clr;
   }
 

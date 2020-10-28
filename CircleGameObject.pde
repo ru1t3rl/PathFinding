@@ -6,7 +6,7 @@ class CircleGameObject extends GameObject {
     this.radius = radius;
   }
   
-  public boolean Collide(CircleGameObject other){
+  public boolean collide(CircleGameObject other){
     float dX = other.position.x - this.position.x;
     float dY = other.position.y - this.position.y;
     float d = (float)Math.sqrt(dX*dX + dY*dY);

@@ -8,37 +8,42 @@ class GameObject {
 
 
   public GameObject() {
-    Setup(new PVector(0, 0), new PVector(0, 0), new PVector(0, 0));
+    setup(new PVector(0, 0), new PVector(0, 0), new PVector(0, 0));
   }
 
   public GameObject(PVector position) {
-    Setup(position, new PVector(0, 0), new PVector(0, 0));
+    setup(position, new PVector(0, 0), new PVector(0, 0));
   }
 
   public GameObject(PVector position, PVector size) {
-    Setup(position, size, new PVector(0, 0));
+    setup(position, size, new PVector(0, 0));
   }
 
   public GameObject(PVector position, PVector size, PVector velocity) {
-    Setup(position, size, velocity);
+    setup(position, size, velocity);
   }
 
-  protected void Setup(PVector position, PVector size, PVector velocity) {
+  protected void setup(PVector position, PVector size, PVector velocity) {
     this.position = position;
     this.velocity = velocity;
     this.size = size;
   }
 
-  public void Update() {
+  public void update() {
+    if (!enabled)
+      return;
+
     deltaTime = frameRate*1.0 / FPS;
     PVector newVelocity = velocity;
     position.add(newVelocity.mult(deltaTime));
   }
 
   public void draw() {
+    if (!enabled)
+      return;
   }
 
-  public boolean Collide(GameObject other, RECTMODE mode) {
+  public boolean collide(GameObject other, RECTMODE mode) {
     boolean x = false,
       y = false;
 

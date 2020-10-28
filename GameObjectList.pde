@@ -17,19 +17,35 @@ class GameObjectList extends GameObject {
     return children;
   }
 
-  public void Add(GameObject obj) {
+  public void add(GameObject obj) {
     obj.Parent = this;
     children.add(obj);
   }
 
-  public void Update() {
-    super.Update();
+  public void addRange(ArrayList<GameObject> objs) {
+    for (int iGobj = 0; iGobj < objs.size(); iGobj++) {
+      objs.get(iGobj).Parent = this;
+      children.add(objs.get(iGobj));
+    }
+  }
+
+  public void addRange(GameObject[] objs) {
+    for (int iGobj = 0; iGobj < objs.length; iGobj++) {
+      objs[iGobj].Parent = this;
+      children.add(objs[iGobj]);
+    }
+  }
+
+  public void update() {
+    super.update();
     for (GameObject obj : children) {
-      obj.Update();
+      obj.update();
     }
   }
 
   public void draw() {
+    super.draw();
+
     for (GameObject obj : children) {
       obj.draw();
     }
